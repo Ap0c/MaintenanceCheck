@@ -9,24 +9,29 @@ secondsinmonth = 2629743
 
 print "Running maintenance, do not close the window..."
 
-#Assigns the time of modification of the maintenance script outputs (i.e. the time since they last ran) to variables, this is in Unix seconds.
-dailytime = os.path.getmtime("/var/log/daily.out")
-weeklytime = os.path.getmtime("/var/log/weekly.out")
-monthlytime = os.path.getmtime("/var/log/monthly.out")
-
-#Assigns the time since the scripts last ran to variables, making use of the current system time.
-sincedaily = time.time() - dailytime
-sinceweekly = time.time() - weeklytime
-sincemonthly = time.time() - monthlytime
-
-#Runs each script if the time since it last ran is longer than it should be.
-if sincedaily > secondsinday:
+#Checks to see when the scripts were last run and, if it's been a while, runs them.
+try:
+	dailytime = os.path.getmtime("/var/log/daily.out") #Checks when the daily script output file was last modified.
+	sincedaily = time.time() - dailytime
+	if sincedaily > secondsinday: #If it was last modified more than a day ago, runs the script.
+		subprocess.call("sudo periodic daily")
+except IOError: #If the file does not exist, it's possible the script has never been run, this runs it.
 	subprocess.call("sudo periodic daily")
 
-if sinceweekly > secondsinweek:
+try:
+	weeklytime = os.path.getmtime("/var/log/weekly.out") #Checks when the weekly script output file was last modified.
+	sinceweekly = time.time() - weeklytime
+	if sinceweekly > secondsinweek: #If it was last modified more than a week ago, runs the script.
+		subprocess.call("sudo periodic weekly")
+except IOError: #If the file does not exist, it's possible the script has never been run, this runs it.
 	subprocess.call("sudo periodic weekly")
 
-if sincemonthly > secondsinmonth:
+try:
+	monthlytime = os.path.getmtime("/var/log/monthly.out") #Checks when the monthly script output file was last modified.
+	sincemonthly = time.time() - monthlytime
+	if sincemonthly > secondsinmonth: #If it was last modified more than a month ago, runs the script.
+		subprocess.call("sudo periodic monthly")
+except IOError: #If the file does not exist, it's possible the script has never been run, this runs it.
 	subprocess.call("sudo periodic monthly")
 
 print "Maintenance finished, you may now close the window."
