@@ -14,24 +14,24 @@ try:
 	dailytime = os.path.getmtime("/var/log/daily.out") #Checks when the daily script output file was last modified.
 	sincedaily = time.time() - dailytime
 	if sincedaily > secondsinday: #If it was last modified more than a day ago, runs the script.
-		subprocess.call("sudo periodic daily")
-except IOError: #If the file does not exist, it's possible the script has never been run, this runs it.
-	subprocess.call("sudo periodic daily")
+		os.system("sudo periodic daily")
+except OSError: #If the file does not exist, it's possible the script has never been run, this runs it.
+	os.system("sudo periodic daily")
 
 try:
 	weeklytime = os.path.getmtime("/var/log/weekly.out") #Checks when the weekly script output file was last modified.
 	sinceweekly = time.time() - weeklytime
 	if sinceweekly > secondsinweek: #If it was last modified more than a week ago, runs the script.
-		subprocess.call("sudo periodic weekly")
-except IOError: #If the file does not exist, it's possible the script has never been run, this runs it.
-	subprocess.call("sudo periodic weekly")
+		os.system("sudo periodic weekly")
+except OSError: #If the file does not exist, it's possible the script has never been run, this runs it.
+	os.system("sudo periodic weekly")
 
 try:
 	monthlytime = os.path.getmtime("/var/log/monthly.out") #Checks when the monthly script output file was last modified.
 	sincemonthly = time.time() - monthlytime
 	if sincemonthly > secondsinmonth: #If it was last modified more than a month ago, runs the script.
-		subprocess.call("sudo periodic monthly")
-except IOError: #If the file does not exist, it's possible the script has never been run, this runs it.
-	subprocess.call("sudo periodic monthly")
+		os.system("sudo periodic monthly")
+except OSError: #If the file does not exist, it's possible the script has never been run, this runs it.
+	os.system("sudo periodic monthly")
 
 print "Maintenance finished, you may now close the window."
