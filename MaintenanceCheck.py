@@ -8,7 +8,7 @@ secondsinweek = 604800
 secondsinmonth = 2629743
 
 def printrunning():
-	print "Running maintenance, please enter your password and do not close the window once you have entered it. The program will inform you when it is done."
+	print "Running maintenance, please enter your password if asked and do not close the window once you have entered it. The program will inform you when it is done."
 
 #Checks to see when the scripts were last run and, if it's been a while, runs them.
 try:
