@@ -14,13 +14,20 @@ SECONDS_MONTH = 2629743
 
 # ----- Functions ----- #
 
-def print_info():
+def print_launch():
 
 	"""Explains to the user what is happening upon launch."""
 
 	print ('Running maintenance, please enter your password if asked and do '
 		'not close the window once you have entered it. The program will '
-		'inform you when it is done.')
+		'inform you when it is done.\n')
+
+
+def print_info(script):
+
+	"""Informs the user of a maintenance script running."""
+
+	print '{0} maintenance script running...\n'.format(script)
 
 
 def print_done():
@@ -64,6 +71,8 @@ def maintenance(script, time_period):
 # ----- Main ----- #
 
 if __name__ == '__main__':
+
+	print_launch()
 
 	maintenance('daily', SECONDS_DAY)
 	maintenance('weekly', SECONDS_WEEK)
