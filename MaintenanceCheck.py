@@ -1,44 +1,109 @@
-import subprocess
+# ----- Imports ----- #
+
 import os
 import time
 
-#Assigns the seconds in a day, week and month to variables.
-secondsinday = 86400
-secondsinweek = 604800
-secondsinmonth = 2629743
 
-def printrunning():
-	print "Running maintenance, please enter your password if asked and do not close the window once you have entered it. The program will inform you when it is done."
+# ----- Setup ----- #
 
-#Checks to see when the scripts were last run and, if it's been a while, runs them.
-try:
-	dailytime = os.path.getmtime("/var/log/daily.out") #Checks when the daily script output file was last modified.
-	sincedaily = time.time() - dailytime
-	if sincedaily > secondsinday: #If it was last modified more than a day ago, runs the script.
-		printrunning()
+# The number of seconds in a day, a week and a month.
+SECONDS_DAY = 86400
+SECONDS_WEEK = 604800
+SECONDS_MONTH = 2629743
+
+
+# ----- Functions ----- #
+
+def print_info():
+
+	"""Explains to the user what is happening upon launch."""
+
+	print ('Running maintenance, please enter your password if asked and do '
+		'not close the window once you have entered it. The program will '
+		'inform you when it is done.')
+
+
+def print_done():
+
+	"""Informs the user of maintenance completion."""
+
+	print 'Maintenance finished, you may now close the window.'
+
+
+def run_daily():
+
+	"""Checks when the daily script was last run, and runs it if necessary."""
+
+	try:
+
+		# Checks for the timestamp on the daily script output file.
+		dailytime = os.path.getmtime("/var/log/daily.out")
+		sincedaily = time.time() - dailytime
+
+		# If it's been more than a day, runs it.
+		if sincedaily > SECONDS_DAY:
+
+			print_info()
+			os.system("sudo periodic daily")
+
+	# If the file does not exist, it's possible the script has never been run.
+	except OSError:
+
+		print_info()
 		os.system("sudo periodic daily")
-except OSError: #If the file does not exist, it's possible the script has never been run, this runs it.
-	printrunning()
-	os.system("sudo periodic daily")
 
-try:
-	weeklytime = os.path.getmtime("/var/log/weekly.out") #Checks when the weekly script output file was last modified.
-	sinceweekly = time.time() - weeklytime
-	if sinceweekly > secondsinweek: #If it was last modified more than a week ago, runs the script.
-		printrunning()
+
+def run_weekly():
+
+	"""Checks when the weekly script was last run, and runs it if necessary."""
+
+	try:
+
+		# Checks for the timestamp on the weekly script output file.
+		weeklytime = os.path.getmtime("/var/log/weekly.out")
+		sinceweekly = time.time() - weeklytime
+
+		# If it's been more than a week, runs it.
+		if sinceweekly > SECONDS_WEEK:
+
+			print_info()
+			os.system("sudo periodic weekly")
+
+	# If the file does not exist, it's possible the script has never been run.
+	except OSError:
+
+		print_info()
 		os.system("sudo periodic weekly")
-except OSError: #If the file does not exist, it's possible the script has never been run, this runs it.
-	printrunning()
-	os.system("sudo periodic weekly")
 
-try:
-	monthlytime = os.path.getmtime("/var/log/monthly.out") #Checks when the monthly script output file was last modified.
-	sincemonthly = time.time() - monthlytime
-	if sincemonthly > secondsinmonth: #If it was last modified more than a month ago, runs the script.
-		printrunning()
+
+def run_weekly():
+
+	"""Checks when the monthly script was last run, and runs it if necessary."""
+
+	try:
+
+		# Checks for the timestamp on the monthly script output file.
+		monthlytime = os.path.getmtime("/var/log/monthly.out")
+		sincemonthly = time.time() - monthlytime
+
+		# If it's been more than a month, runs it.
+		if sincemonthly > SECONDS_MONTH:
+
+			print_info()
+			os.system("sudo periodic monthly")
+
+	# If the file does not exist, it's possible the script has never been run.
+	except OSError:
+
+		print_info()
 		os.system("sudo periodic monthly")
-except OSError: #If the file does not exist, it's possible the script has never been run, this runs it.
-	printrunning()
-	os.system("sudo periodic monthly")
 
-print "Maintenance finished, you may now close the window."
+
+# ----- Main ----- #
+
+if __name__ == '__main__':
+
+	run_daily()
+	run_weekly()
+	run_monthly()
+	print_done()
