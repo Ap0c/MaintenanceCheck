@@ -30,80 +30,43 @@ def print_done():
 	print 'Maintenance finished, you may now close the window.'
 
 
-def run_daily():
+def run_script(script):
 
-	"""Checks when the daily script was last run, and runs it if necessary."""
+	"""Runs a specified script, and informs the user."""
+
+	print_info()
+	os.system('sudo periodic {0}'.format(script))
+
+
+def maintenance(script, time_period):
+
+	"""Checks when a script was last run, and runs it if necessary."""
 
 	try:
 
 		# Checks for the timestamp on the daily script output file.
-		dailytime = os.path.getmtime("/var/log/daily.out")
-		sincedaily = time.time() - dailytime
-
-		# If it's been more than a day, runs it.
-		if sincedaily > SECONDS_DAY:
-
-			print_info()
-			os.system("sudo periodic daily")
+		last_run = os.path.getmtime('/var/log/{0}.out'.format(script))
 
 	# If the file does not exist, it's possible the script has never been run.
 	except OSError:
 
-		print_info()
-		os.system("sudo periodic daily")
+		run_script(script)
 
+	else:
 
-def run_weekly():
+		since_run = time.time() - last_run
 
-	"""Checks when the weekly script was last run, and runs it if necessary."""
-
-	try:
-
-		# Checks for the timestamp on the weekly script output file.
-		weeklytime = os.path.getmtime("/var/log/weekly.out")
-		sinceweekly = time.time() - weeklytime
-
-		# If it's been more than a week, runs it.
-		if sinceweekly > SECONDS_WEEK:
-
-			print_info()
-			os.system("sudo periodic weekly")
-
-	# If the file does not exist, it's possible the script has never been run.
-	except OSError:
-
-		print_info()
-		os.system("sudo periodic weekly")
-
-
-def run_weekly():
-
-	"""Checks when the monthly script was last run, and runs it if necessary."""
-
-	try:
-
-		# Checks for the timestamp on the monthly script output file.
-		monthlytime = os.path.getmtime("/var/log/monthly.out")
-		sincemonthly = time.time() - monthlytime
-
-		# If it's been more than a month, runs it.
-		if sincemonthly > SECONDS_MONTH:
-
-			print_info()
-			os.system("sudo periodic monthly")
-
-	# If the file does not exist, it's possible the script has never been run.
-	except OSError:
-
-		print_info()
-		os.system("sudo periodic monthly")
+		# If it's been more than the recommended time period, runs it.
+		if sincedaily > time_period:
+			run_script(script)
 
 
 # ----- Main ----- #
 
 if __name__ == '__main__':
 
-	run_daily()
-	run_weekly()
-	run_monthly()
+	maintenance('daily', SECONDS_DAY)
+	maintenance('weekly', SECONDS_WEEK)
+	maintenance('monthly', SECONDS_MONTH)
+
 	print_done()
