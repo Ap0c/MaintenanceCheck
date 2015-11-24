@@ -27,7 +27,7 @@ def print_info(script):
 
 	"""Informs the user of a maintenance script running."""
 
-	print '{0} maintenance script running...\n'.format(script)
+	print '%s maintenance script running...\n' % script
 
 
 def print_done():
@@ -42,7 +42,7 @@ def run_script(script):
 	"""Runs a specified script, and informs the user."""
 
 	print_info()
-	os.system('sudo periodic {0}'.format(script))
+	os.system('sudo periodic %s' % script)
 
 
 def maintenance(script, time_period):
@@ -52,7 +52,7 @@ def maintenance(script, time_period):
 	try:
 
 		# Checks for the timestamp on the daily script output file.
-		last_run = os.path.getmtime('/var/log/{0}.out'.format(script))
+		last_run = os.path.getmtime('/var/log/%s.out' % script)
 
 	# If the file does not exist, it's possible the script has never been run.
 	except OSError:
